@@ -65,3 +65,55 @@ for (let i = 1; i < xNum; i++) {
   secondNum = nextNum;
 }
 console.log(`the first ${xNum} fibonacci numbers: ${numStr}`);
+
+// Soal tambahan
+
+// Berat badan
+// Tinggi badan
+// Find BMI
+// Outputnya:
+// Bila beratnya ideal
+// diinfo ideal
+// Kalau tidak ideal
+// info tidak ideal
+
+const kgWeight = 50;
+const mHeight = 1.8;
+const BMI = Number((kgWeight / mHeight ** 2).toFixed(1));
+const lowLim = 18.5;
+const highLim = 24.9;
+if (BMI < lowLim || BMI > highLim) {
+  console.log(
+    `BMI: ${BMI}, tidak ideal, ${
+      BMI - lowLim < 0
+        ? `kurang ${(lowLim - BMI).toFixed(1)}`
+        : `lebih ${(BMI - highLim).toFixed(1)}`
+    } untuk ideal`
+  );
+} else {
+  console.log(`BMI: ${BMI}, ideal`);
+}
+
+// Input total loop
+// console.log angka yang di loop
+// bila habis dibagi 3 console.log("BUZZ")
+// bila habis dibagi 5 console.log("FUZZ")
+// bila habis dibagi keduanya console.log("FUZZBUZZ")
+
+let fuzzbuzzstring = "";
+
+for (let i = 1; i <= xNum; i++) {
+  let tempString = "";
+  if (i % 5 == 0 || i % 3 == 0) {
+    if (i % 5 == 0) {
+      tempString += "FUZZ";
+    }
+    if (i % 3 == 0) {
+      tempString += "BUZZ";
+    }
+  } else {
+    tempString += `${i}`;
+  }
+  fuzzbuzzstring += `${tempString} `;
+}
+console.log(fuzzbuzzstring);
