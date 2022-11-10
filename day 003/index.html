@@ -1,0 +1,118 @@
+<!-- 
+Buat sebuah aplikasi Book Store menggunakan html dengan prompt dan alert. Tampilkan menu dengan pilihan menu :
+1. Daftar Buku (dapat memilih buku untuk dibeli. Terdapat stock jumlah buku yang tersedia serta harga buku tersebut dan dapat menginput berapa banyak buku yang ingin dibeli)
+2. Keranjang Belanja (dapat menghapus buku yang ada di keranjang dan mengedit quantity bukunya. Qty buku yg terdapat di keranjang belum menghapus jumlah stock yg ada pada daftar buku tetapi tidak boleh melebihi jumlah stock)
+3. Payment ( menampilkan semua jenis ,quantity, dan harga dari buku yg di keranjang. Dan user harus menginput uang sesuai dengan total dari harga bukunya. Apa bila kurang maka tidak berhasil membayar. Bila uang kelebihan maka akan menampillan kembalian dari uang si user)
+4. Exit (keluar dari menu yang ditampilkan. Menu akan selalu dilooping selama user tidak memilih untuk exit)
+-->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Store</title>
+    <script async>
+      let userCart = [];
+      let avalInvts = [
+        ["Web Dev Module", 16, 18000],
+        ["Data Science Module", 32, 20000],
+        ["UI/UX Module", 08, 17000],
+        ["Digital Marketing Module", 12, 10000],
+      ];
+      const validateInput = (array, input) => {
+        let result = array.find(
+          (val, idx) =>
+            input == idx + 1 || input.toLowerCase() == val[0].toLowerCase()
+        );
+        return result;
+      };
+      const bookList = () => {
+        let bookToBuy = prompt(
+          `${mainMenu[0][0]}${avalInvts.map(
+            (invt, idx) =>
+              `\n  (${idx + 1}) [Rp##k] {Aval.Qty: ${invt[1]}} ${invt[0]}`
+          )}`
+        );
+        let bookInInvts = validateInput(avalInvts, bookToBuy);
+        if (bookInInvts) {
+          let bookQty = 0;
+          const askBookQty = () => {
+            let bookQtyToCart = Number(
+              prompt(
+                `Purchase quantity (cannot be greater than available stock)\n  ${bookInInvts[0]}\n  {Aval.Qty: ${bookInInvts[1]}} [Rp##k]`
+              )
+            );
+            if (bookQtyToCart > bookInInvts[1]) {
+              askBookQty();
+            } else {
+              bookQty = bookQtyToCart;
+            }
+          };
+          askBookQty();
+          const checkBookIdx = (invt) => invt[0] == bookInInvts[0];
+          let sameBook = userCart.find(checkBookIdx);
+          if (sameBook) {
+            userCart[userCart.findIndex(checkBookIdx)][1] += bookQty;
+          } else {
+            userCart.push([bookInInvts[0], bookQty]);
+          }
+        } else {
+          mainMenu[0][1]();
+        }
+      };
+      const shopCart = () => {
+        let cartEdit = prompt(`${mainMenu[1][0]}\n`);
+      };
+      const checkout = () => {
+        let payProcess = prompt(`${mainMenu[2][0]}\n`);
+      };
+      const exitStore = () => {};
+      let mainMenu = [
+        ["Daftar Buku", bookList],
+        ["Keranjang Buku", shopCart],
+        ["Payment", checkout],
+        ["Exit", exitStore],
+      ];
+      const main = () => {
+        let menuSel = prompt(
+          `Book Store${mainMenu.map(
+            (menuItem, idx) => `\n  (${idx + 1}) ${menuItem[0]}`
+          )}`
+        );
+        let checkSel = validateInput(mainMenu, menuSel);
+        if (checkSel) {
+          checkSel[1]();
+        } else {
+          main();
+        }
+        // const bookList = () => {
+        //   let bookToBuy = prompt(
+        //     `${mainMenu[0]}${avalBSPs.map(
+        //       (BSP, idx) => `\n(${idx + 1}) [Rp##k] {Qty: ${BSP[1]}} ${BSP[2]}`
+        //     )}`
+        //   );
+        //   if (validateInput(avalBSPs, bookToBuy)) {
+        //     let bookChosen = avalBSPs[bookToBuy];
+        //   } else {
+        //     bookList();
+        //   }
+        // };
+        // if (menuSel == 1 || menuSel == /daftar buku/i) {
+        //   bookList();
+        // } else if (menuSel == 2 || menuSel == /keranjang belanja/i) {
+        //   shopCart();
+        // } else if (menuSel == 3 || menuSel == /payment/i) {
+        //   payment();
+        // } else if (menuSel == 4 || menuSel == /exit/i) {
+        // } else {
+        //   main();
+        // }
+      };
+      main();
+    </script>
+  </head>
+  <body>
+    <button onclick="main()">Open Menu</button>
+  </body>
+</html>
