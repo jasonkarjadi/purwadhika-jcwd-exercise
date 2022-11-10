@@ -14,12 +14,13 @@ for (let i = 1; i <= 10; i++) {
 
 // Write a code to check whether a string is a palindrome or not.
 
-let xWord = "adik";
+let xWord = "kak ak";
+let unspaced = xWord.replace(/ /g, "");
 
-if (xWord == xWord.split("").reverse().join("")) {
-  console.log(`${xWord} is a palindrome`);
+if (unspaced == unspaced.split("").reverse().join("")) {
+  console.log(`${unspaced} is a palindrome`);
 } else {
-  console.log(`${xWord} is NOT a palindrome`);
+  console.log(`${unspaced} is NOT a palindrome`);
 }
 
 // Write a code to convert centimeter to kilometer.
@@ -32,18 +33,22 @@ console.log(`${cmLength} cm equals to ${kmLength} km`);
 // Write a code to format number as currency (IDR)
 // Example : 1000 → “Rp. 1.000,00”
 
-let xMoney = 15000;
+let xMoney = 1500000;
 
-let IDR = `Rp${xMoney},00`;
+let moneyNumArr = xMoney.toString().split("");
+
+for (let i = moneyNumArr.length - 3; i > 0; i -= 3) {
+  moneyNumArr.splice(i, 0, ".");
+}
+let IDR = `Rp${moneyNumArr.join("")},00`;
 console.log(IDR);
 
 // Write a code to remove the first occurrence of a given “search string” from a string
 // Example : string = “Hello world”, search string = “ell” → “Ho world”
 
-let xString = "so long where did we go wrong";
-let searchString = "ong";
+let xString = "So long where did we go wrong";
 
-let newString = xString.replace(searchString, "");
+let newString = xString.replace(/o/gi, "");
 console.log(newString);
 
 // Write a code to capitalize the first letter of each word in a string
