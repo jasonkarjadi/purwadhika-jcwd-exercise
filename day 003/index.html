@@ -13,79 +13,111 @@ Buat sebuah aplikasi Book Store menggunakan html dengan prompt dan alert. Tampil
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Book Store</title>
     <script async>
+      let bookPrice = 11000;
+      let priceTagline = `[ Rp11k untuk semua jenis buku ]`;
       let userCart = [];
       let avalInvts = [
-        ["Web Dev Module", 16, 18000],
-        ["Data Science Module", 32, 20000],
-        ["UI/UX Module", 08, 17000],
-        ["Digital Marketing Module", 12, 10000],
+        ["Web Dev Module", 16],
+        ["Data Science Module", 32],
+        ["UI/UX Module", 10],
+        ["Digital Marketing Module", 12],
       ];
-      const validateInput = (array, input) => {
+      const checkMatch = (array, input) => {
         let result = array.find(
           (val, idx) =>
             input == idx + 1 || input.toLowerCase() == val[0].toLowerCase()
         );
         return result;
       };
+      const loopOrBack = (input, index) => {
+        input ? mainMenu[index][1]() : main();
+      };
+      const numToIDR = (number) =>
+        `Rp${number.toLocaleString().replace(/,/g, ".")},00`;
       const bookList = () => {
         let bookToBuy = prompt(
-          `${mainMenu[0][0]}${avalInvts.map(
-            (invt, idx) =>
-              `\n  (${idx + 1}) [Rp##k] {Aval.Qty: ${invt[1]}} ${invt[0]}`
-          )}`
+          `-- ${mainMenu[0][0]} --\n${priceTagline}${avalInvts.map(
+            (invt, idx) => `\n    (${idx + 1}) {Qty: ${invt[1]}} ${invt[0]}`
+          )}\n-- Masukan nomor atau judul buku --`
         );
-        let bookInInvts = validateInput(avalInvts, bookToBuy);
+        let bookInInvts = checkMatch(avalInvts, bookToBuy);
         if (bookInInvts) {
-          let bookQty = 0;
+          const checkBookIdx = (invt) => invt[0] == bookInInvts[0];
+          let sameBookIdx = userCart.findIndex(checkBookIdx);
+          let sameBookQty = sameBookIdx >= 0 ? userCart[sameBookIdx][1] : 0;
           const askBookQty = () => {
-            let bookQtyToCart = Number(
+            let buyQty = Number(
               prompt(
-                `Purchase quantity (cannot be greater than available stock)\n  ${bookInInvts[0]}\n  {Aval.Qty: ${bookInInvts[1]}} [Rp##k]`
+                `    ${bookInInvts[0]}\n    {Cart.Qty: ${sameBookQty}} {Aval.Qty: ${bookInInvts[1]}}\n-- Masukan jumlah beli sesuai dengan ketersediaan buku --`
               )
             );
-            if (bookQtyToCart > bookInInvts[1]) {
+            if (buyQty > bookInInvts[1] - sameBookQty || isNaN(buyQty)) {
               askBookQty();
             } else {
-              bookQty = bookQtyToCart;
+              sameBookQty
+                ? (userCart[sameBookIdx][1] += buyQty)
+                : userCart.push([bookInInvts[0], buyQty]);
             }
           };
           askBookQty();
-          const checkBookIdx = (invt) => invt[0] == bookInInvts[0];
-          let sameBook = userCart.find(checkBookIdx);
-          if (sameBook) {
-            userCart[userCart.findIndex(checkBookIdx)][1] += bookQty;
-          } else {
-            userCart.push([bookInInvts[0], bookQty]);
-          }
-        } else {
-          mainMenu[0][1]();
         }
+        loopOrBack(bookToBuy, 0);
       };
       const shopCart = () => {
-        let cartEdit = prompt(`${mainMenu[1][0]}\n`);
+        let cartEdit = prompt(`-- ${mainMenu[1][0]} --\n-- --`);
+
+        loopOrBack(cartEdit, 1);
       };
-      const checkout = () => {
-        let payProcess = prompt(`${mainMenu[2][0]}\n`);
+      const bookCheckout = () => {
+        let cartList = "";
+        let totalPrice = 0;
+        if (userCart[0]) {
+          userCart.map((item) => {
+            cartList += `\n    ( ) {Qty: ${item[1]}} ${item[0]}`;
+            totalPrice += item[1] * bookPrice;
+          });
+          cartList += `\n-- Total: ${numToIDR(totalPrice)} --`;
+        }
+        let payProcess = prompt(
+          `-- ${mainMenu[2][0]} --\n${priceTagline}${cartList}`
+        );
+        if (cartList && payProcess.replace(/Rp/gi, "") >= totalPrice) {
+          alert(
+            `Terima kasih atas pembeliannya!${
+              payProcess > totalPrice
+                ? `\nKembalian Anda: ${numToIDR(payProcess - totalPrice)}`
+                : ""
+            }`
+          );
+          avalInvts.map((invt, idx) => {
+            let soldItem = userCart.find((item) => item[0] == invt[0]);
+            soldItem && (avalInvts[idx][1] -= soldItem[1]);
+          });
+          userCart = [];
+          cartHistory = [];
+          cartList = "";
+          totalPrice = 0;
+          main();
+        }
+        loopOrBack(payProcess, 2);
       };
-      const exitStore = () => {};
+      const exitStore = () => {
+        alert(`Kami menantikan langganan Anda selanjutnya!`);
+      };
       let mainMenu = [
         ["Daftar Buku", bookList],
         ["Keranjang Buku", shopCart],
-        ["Payment", checkout],
+        ["Payment", bookCheckout],
         ["Exit", exitStore],
       ];
       const main = () => {
         let menuSel = prompt(
-          `Book Store${mainMenu.map(
-            (menuItem, idx) => `\n  (${idx + 1}) ${menuItem[0]}`
-          )}`
+          `-- Book Store --${mainMenu.map(
+            (menuItem, idx) => `\n    (${idx + 1}) ${menuItem[0]}`
+          )}\n-- Masukan nomor atau nama tujuan Anda --`
         );
-        let checkSel = validateInput(mainMenu, menuSel);
-        if (checkSel) {
-          checkSel[1]();
-        } else {
-          main();
-        }
+        let selMatch = checkMatch(mainMenu, menuSel);
+        selMatch ? selMatch[1]() : main();
         // const bookList = () => {
         //   let bookToBuy = prompt(
         //     `${mainMenu[0]}${avalBSPs.map(
