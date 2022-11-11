@@ -6,7 +6,7 @@ Buat sebuah aplikasi Book Store menggunakan html dengan prompt dan alert. Tampil
 4. Exit (keluar dari menu yang ditampilkan. Menu akan selalu dilooping selama user tidak memilih untuk exit)
 -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="background: brown">
   <head>
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -34,51 +34,64 @@ Buat sebuah aplikasi Book Store menggunakan html dengan prompt dan alert. Tampil
       };
       const numToIDR = (number) =>
         `Rp${number.toLocaleString().replace(/,/g, ".")},00`;
-      const enumCart = (doIdx) => {
+      const displayListItem = (item, idx) =>
+        `\n    (${idx}) {Qty: ${item[1]}} ${item[0]}`;
+      const enumCart = (listBullet) => {
         let [cartList, totalPrice] = ["", 0];
         userCart.map((item, idx) => {
-          cartList += `\n    (${doIdx ? idx + 1 : " "}) {Qty: ${item[1]}} ${
-            item[0]
-          }`;
+          cartList += displayListItem(
+            item,
+            isNaN(listBullet) ? listBullet : idx + listBullet
+          );
           totalPrice += item[1] * bookPrice;
         });
         cartList += `\n-- Total: ${numToIDR(totalPrice)} --`;
         return [cartList, totalPrice];
       };
       const bookList = () => {
-        let bookToBuy = prompt(
-          `-- ${mainMenu[0][0]} --\n${priceTagline}${avalInvts.map(
-            (invt, idx) => `\n    (${idx + 1}) {Qty: ${invt[1]}} ${invt[0]}`
-          )}\n-- Masukan nomor atau judul buku akan masuk keranjang--`
+        let invtList = avalInvts.map((invt, idx) =>
+          displayListItem(invt, idx + 1)
         );
-        let shelfBook = checkMatch(avalInvts, bookToBuy);
-        if (shelfBook) {
-          let sameBookIdx = userCart.findIndex(
-            (invt) => invt[0] == shelfBook[0]
-          );
-          let sameBookQty = sameBookIdx >= 0 ? userCart[sameBookIdx][1] : 0;
-          const askBookQty = () => {
-            let addQty = parseInt(
-              prompt(
-                `    ${shelfBook[0]}\n    {Cart.Qty: ${sameBookQty}} {Aval.Qty: ${shelfBook[1]}}\n-- Masukan jumlah buku sesuai dengan ketersediaannya --`
-              )
+        let bookToBuy = prompt(
+          `-- ${mainMenu[0][0]} --\n${priceTagline}${invtList}\n-- Masukan nomor atau judul buku akan masuk keranjang --`
+        );
+        if (!bookToBuy) {
+          main();
+        } else {
+          let shelfBook = checkMatch(avalInvts, bookToBuy);
+          if (!shelfBook) {
+            mainMenu[0][1]();
+          } else {
+            let idxInCart = userCart.findIndex(
+              (invt) => invt[0] == shelfBook[0]
             );
-            if (addQty > shelfBook[1] - sameBookQty || isNaN(addQty)) {
-              askBookQty();
-            } else {
-              if (sameBookQty) {
-                userCart[sameBookIdx][1] += addQty;
+            let sameBookQty = idxInCart >= 0 ? userCart[idxInCart][1] : 0;
+            const askBookQty = () => {
+              let addQty = prompt(
+                `    ${shelfBook[0]}\n    {Cart.Qty: ${sameBookQty}} {Aval.Qty: ${shelfBook[1]}}\n-- Masukan jumlah buku sesuai dengan ketersediaannya --`
+              );
+              let addQtyNum = parseInt(addQty);
+              let validAddQty =
+                addQtyNum > 0 && addQtyNum <= shelfBook[1] - sameBookQty;
+              if (!addQty || validAddQty) {
+                if (validAddQty) {
+                  if (sameBookQty) {
+                    userCart[idxInCart][1] += addQtyNum;
+                  } else {
+                    userCart.push([shelfBook[0], addQtyNum]);
+                  }
+                }
+                mainMenu[0][1]();
               } else {
-                userCart.push([shelfBook[0], addQty]);
+                askBookQty();
               }
-            }
-          };
-          askBookQty();
+            };
+            askBookQty();
+          }
         }
-        loopOrBack(bookToBuy, 0);
       };
       const shopCart = () => {
-        let [cartList, totalPrice] = userCart[0] ? enumCart(true) : ["", 0];
+        let [cartList, totalPrice] = userCart[0] ? enumCart(1) : ["", 0];
         let cartEdit = prompt(
           `-- ${mainMenu[1][0]} --\n${priceTagline}${cartList}\n-- Masukan nomor atau judul buku akan keluar dari keranjang --`
         );
@@ -107,7 +120,7 @@ Buat sebuah aplikasi Book Store menggunakan html dengan prompt dan alert. Tampil
         loopOrBack(cartEdit, 1);
       };
       const bookCheckout = () => {
-        let [cartList, totalPrice] = userCart[0] ? enumCart(false) : ["", 0];
+        let [cartList, totalPrice] = userCart[0] ? enumCart(" ") : ["", 0];
         let payProcess = prompt(
           `-- ${mainMenu[2][0]} --\n${priceTagline}${cartList}`
         );
