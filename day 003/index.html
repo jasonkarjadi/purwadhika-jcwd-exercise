@@ -34,29 +34,43 @@ Buat sebuah aplikasi Book Store menggunakan html dengan prompt dan alert. Tampil
       };
       const numToIDR = (number) =>
         `Rp${number.toLocaleString().replace(/,/g, ".")},00`;
+      const enumCart = (doIdx) => {
+        let [cartList, totalPrice] = ["", 0];
+        userCart.map((item, idx) => {
+          cartList += `\n    (${doIdx ? idx + 1 : ""}) {Qty: ${item[1]}} ${
+            item[0]
+          }`;
+          totalPrice += item[1] * bookPrice;
+        });
+        cartList += `\n-- Total: ${numToIDR(totalPrice)} --`;
+        return [cartList, totalPrice];
+      };
       const bookList = () => {
         let bookToBuy = prompt(
           `-- ${mainMenu[0][0]} --\n${priceTagline}${avalInvts.map(
             (invt, idx) => `\n    (${idx + 1}) {Qty: ${invt[1]}} ${invt[0]}`
-          )}\n-- Masukan nomor atau judul buku --`
+          )}\n-- Masukan nomor atau judul buku akan masuk keranjang--`
         );
-        let bookInInvts = checkMatch(avalInvts, bookToBuy);
-        if (bookInInvts) {
-          const checkBookIdx = (invt) => invt[0] == bookInInvts[0];
-          let sameBookIdx = userCart.findIndex(checkBookIdx);
+        let shelfBook = checkMatch(avalInvts, bookToBuy);
+        if (shelfBook) {
+          let sameBookIdx = userCart.findIndex(
+            (invt) => invt[0] == shelfBook[0]
+          );
           let sameBookQty = sameBookIdx >= 0 ? userCart[sameBookIdx][1] : 0;
           const askBookQty = () => {
-            let buyQty = Number(
+            let addQty = parseInt(
               prompt(
-                `    ${bookInInvts[0]}\n    {Cart.Qty: ${sameBookQty}} {Aval.Qty: ${bookInInvts[1]}}\n-- Masukan jumlah beli sesuai dengan ketersediaan buku --`
+                `    ${shelfBook[0]}\n    {Cart.Qty: ${sameBookQty}} {Aval.Qty: ${shelfBook[1]}}\n-- Masukan jumlah buku sesuai dengan ketersediaannya --`
               )
             );
-            if (buyQty > bookInInvts[1] - sameBookQty || isNaN(buyQty)) {
+            if (addQty > shelfBook[1] - sameBookQty || isNaN(addQty)) {
               askBookQty();
             } else {
-              sameBookQty
-                ? (userCart[sameBookIdx][1] += buyQty)
-                : userCart.push([bookInInvts[0], buyQty]);
+              if (sameBookQty) {
+                userCart[sameBookIdx][1] += addQty;
+              } else {
+                userCart.push([shelfBook[0], addQty]);
+              }
             }
           };
           askBookQty();
@@ -64,29 +78,45 @@ Buat sebuah aplikasi Book Store menggunakan html dengan prompt dan alert. Tampil
         loopOrBack(bookToBuy, 0);
       };
       const shopCart = () => {
-        let cartEdit = prompt(`-- ${mainMenu[1][0]} --\n-- --`);
-
+        let [cartList, totalPrice] = userCart[0] ? enumCart(true) : ["", 0];
+        let cartEdit = prompt(
+          `-- ${mainMenu[1][0]} --\n${priceTagline}${cartList}\n-- Masukan nomor atau judul buku akan keluar dari keranjang --`
+        );
+        let cartBook = checkMatch(userCart, cartEdit);
+        if (cartBook) {
+          let sameBookIdx = userCart.findIndex(
+            (item) => item[0] == cartBook[0]
+          );
+          const askBookQty = () => {
+            let removeQty = parseInt(
+              prompt(
+                `    ${cartBook[0]}\n    {Cart.Qty: ${cartBook[1]}}\n-- Masukan jumlah buku sesuai dengan jumlah di dalam keranjang --`
+              )
+            );
+            if (removeQty > cartBook[1] || isNaN(removeQty)) {
+              askBookQty();
+            } else {
+              userCart[sameBookIdx][1] -= removeQty;
+              if (userCart[sameBookIdx][1] == 0) {
+                userCart.splice(sameBookIdx, 1);
+              }
+            }
+          };
+          askBookQty();
+        }
         loopOrBack(cartEdit, 1);
       };
       const bookCheckout = () => {
-        let cartList = "";
-        let totalPrice = 0;
-        if (userCart[0]) {
-          userCart.map((item) => {
-            cartList += `\n    ( ) {Qty: ${item[1]}} ${item[0]}`;
-            totalPrice += item[1] * bookPrice;
-          });
-          cartList += `\n-- Total: ${numToIDR(totalPrice)} --`;
-        }
+        let [cartList, totalPrice] = userCart[0] ? enumCart(false) : ["", 0];
         let payProcess = prompt(
           `-- ${mainMenu[2][0]} --\n${priceTagline}${cartList}`
         );
         if (cartList && payProcess.replace(/Rp/gi, "") >= totalPrice) {
           alert(
-            `Terima kasih atas pembeliannya!${
+            `Terima kasih atas pembeliannya!\n${
               payProcess > totalPrice
-                ? `\nKembalian Anda: ${numToIDR(payProcess - totalPrice)}`
-                : ""
+                ? `Kembalian Anda: ${numToIDR(payProcess - totalPrice)}`
+                : `Saldo pembayaran Anda tepat ${numToIDR(totalPrice)}`
             }`
           );
           avalInvts.map((invt, idx) => {
@@ -94,9 +124,6 @@ Buat sebuah aplikasi Book Store menggunakan html dengan prompt dan alert. Tampil
             soldItem && (avalInvts[idx][1] -= soldItem[1]);
           });
           userCart = [];
-          cartHistory = [];
-          cartList = "";
-          totalPrice = 0;
           main();
         }
         loopOrBack(payProcess, 2);
@@ -106,7 +133,7 @@ Buat sebuah aplikasi Book Store menggunakan html dengan prompt dan alert. Tampil
       };
       let mainMenu = [
         ["Daftar Buku", bookList],
-        ["Keranjang Buku", shopCart],
+        ["Keranjang Belanja", shopCart],
         ["Payment", bookCheckout],
         ["Exit", exitStore],
       ];
