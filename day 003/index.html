@@ -37,7 +37,7 @@ Buat sebuah aplikasi Book Store menggunakan html dengan prompt dan alert. Tampil
       const enumCart = (doIdx) => {
         let [cartList, totalPrice] = ["", 0];
         userCart.map((item, idx) => {
-          cartList += `\n    (${doIdx ? idx + 1 : ""}) {Qty: ${item[1]}} ${
+          cartList += `\n    (${doIdx ? idx + 1 : " "}) {Qty: ${item[1]}} ${
             item[0]
           }`;
           totalPrice += item[1] * bookPrice;
@@ -125,8 +125,9 @@ Buat sebuah aplikasi Book Store menggunakan html dengan prompt dan alert. Tampil
           });
           userCart = [];
           main();
+        } else {
+          loopOrBack(payProcess, 2);
         }
-        loopOrBack(payProcess, 2);
       };
       const exitStore = () => {
         alert(`Kami menantikan langganan Anda selanjutnya!`);
@@ -145,28 +146,6 @@ Buat sebuah aplikasi Book Store menggunakan html dengan prompt dan alert. Tampil
         );
         let selMatch = checkMatch(mainMenu, menuSel);
         selMatch ? selMatch[1]() : main();
-        // const bookList = () => {
-        //   let bookToBuy = prompt(
-        //     `${mainMenu[0]}${avalBSPs.map(
-        //       (BSP, idx) => `\n(${idx + 1}) [Rp##k] {Qty: ${BSP[1]}} ${BSP[2]}`
-        //     )}`
-        //   );
-        //   if (validateInput(avalBSPs, bookToBuy)) {
-        //     let bookChosen = avalBSPs[bookToBuy];
-        //   } else {
-        //     bookList();
-        //   }
-        // };
-        // if (menuSel == 1 || menuSel == /daftar buku/i) {
-        //   bookList();
-        // } else if (menuSel == 2 || menuSel == /keranjang belanja/i) {
-        //   shopCart();
-        // } else if (menuSel == 3 || menuSel == /payment/i) {
-        //   payment();
-        // } else if (menuSel == 4 || menuSel == /exit/i) {
-        // } else {
-        //   main();
-        // }
       };
       main();
     </script>
