@@ -69,5 +69,16 @@ loopNumTri(1, 6);
 // Write a function to remove all odd numbers in an array and return a new array that contains
 // even numbers only
 
+let xNumArr = [0, 1, 4, 3, 32, 89, "", "abc", { a: "a" }, [0], [1, 2]];
+const filterOddsOut = (numArr) =>
+  numArr.filter((num) => typeof num == "number" && num % 2 == 0);
+let evenNumArr = filterOddsOut(xNumArr);
+console.log(evenNumArr);
+
 // Write a function to split a string and convert it into an array of words
 // Example : “Hello World” → [“Hello”, “World”]
+
+let xString = "so call me maybe";
+const convertStrToArr = (string) => string.split(" ");
+let xStrArr = convertStrToArr(xString);
+console.log(xStrArr);
