@@ -38,6 +38,26 @@ console.log(convertExcelCol("A"));
 // Input: nums = [1]
 // Output: 1
 
+const findSingleElem = (arr) => {
+  let singleElem;
+  if (arr.length > 1) {
+    let duplicates = arr.filter(
+      (xElem, idx, thisArr) =>
+        idx !== thisArr.findIndex((yElem) => xElem === yElem)
+    );
+    console.log(duplicates);
+    singleElem = arr.find((elem) =>
+      duplicates
+        .map((dupl) => elem !== dupl)
+        .reduce((prevVal, currVal) => prevVal && currVal)
+    );
+  } else {
+    singleElem = arr[0];
+  }
+  return singleElem;
+};
+console.log(findSingleElem([1, 1, 3, 3, 5, 4, 4, 2, 2]));
+
 // Given two strings s and t, return true if t is an anagram of s, and false otherwise.
 // An Anagram is a word or phrase formed by rearranging the letters of a different word or phrase,
 // typically using all the original letters exactly once.
