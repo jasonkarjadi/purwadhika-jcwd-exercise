@@ -40,20 +40,20 @@ console.log(convertExcelCol("A"));
 
 const findSingleElem = (arr) => {
   let singleElem;
-  if (arr.length > 1) {
-    let duplicates = arr.filter(
-      (xElem, idx, thisArr) =>
-        idx !== thisArr.findIndex((yElem) => xElem === yElem)
-    );
-    console.log(duplicates);
-    singleElem = arr.find((elem) =>
-      duplicates
-        .map((dupl) => elem !== dupl)
-        .reduce((prevVal, currVal) => prevVal && currVal)
-    );
-  } else {
-    singleElem = arr[0];
-  }
+  // if (arr.length > 1) {
+  let duplicates = arr.filter(
+    (xElem, idx, thisArr) =>
+      idx !== thisArr.findIndex((yElem) => xElem === yElem)
+  );
+  console.log(duplicates);
+  singleElem = arr.find((elem) =>
+    duplicates
+      .map((dupl) => elem !== dupl)
+      .reduce((prevVal, currVal) => prevVal && currVal)
+  );
+  // } else {
+  //   singleElem = arr[0];
+  // }
   return singleElem;
 };
 console.log(findSingleElem([1, 1, 3, 3, 5, 4, 4, 2, 2]));
@@ -67,6 +67,15 @@ console.log(findSingleElem([1, 1, 3, 3, 5, 4, 4, 2, 2]));
 // Example 2:
 // Input: s = "rat", t = "car"
 // Output: false
+
+let s = "halim";
+let t = "hamil";
+
+const checkIsAnagram = (stringA, stringB) => {
+  let isAnagram;
+  return isAnagram;
+};
+checkIsAnagram(s, t);
 
 // You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1
 // or 2 steps. In how many distinct ways can you climb to the top?
@@ -83,3 +92,86 @@ console.log(findSingleElem([1, 1, 3, 3, 5, 4, 4, 2, 2]));
 // 1. 1 step + 1 step + 1 step
 // 2. 1 step + 2 steps
 // 3. 2 steps + 1 step
+
+let n = 3;
+
+// const getNumsOfPossRoutes = (inputNum) => {
+//   let numsOfPossRoutes = 0;
+//   let equation = [];
+//   for (let i = Math.abs(inputNum); inputNum == 0; i--) {
+//     equation.push(1);
+//   }
+//   if (equation.length) {
+//     numsOfPossRoutes++;
+//     equation.splice(0, 2, 2);
+//     console.log(equation);
+//     numsOfPossRoutes++;
+//   }
+//   return numsOfPossRoutes;
+// };
+// getNumsOfPossRoutes(3);
+
+class Staircase {
+  static possRoutes = [];
+
+  static getNumOfPossRoutes(inputNum = 0) {
+    let allOneArr = new Array(inputNum).fill(1);
+    this.possRoutes.push(allOneArr.slice(0));
+
+    // if (stepsArr.length > 1) {
+    //   stepsArr.shift();
+    //   stepsArr[0] = 2;
+    //   this.possRoutes.push(stepsArr);
+    // }
+
+    let stepsArr = allOneArr.slice(0);
+    for (let i = 0; stepsArr[i] && stepsArr[i + 1]; i++) {
+      stepsArr.splice(i, 2, 2);
+      this.possRoutes.push(stepsArr.slice(0));
+
+      let tempArr = stepsArr.slice(0);
+      for (let j = 0; j <= i; j++) {
+        let offset = i - j;
+        for (let k = 0; k < tempArr.slice(i + 1).length; k++) {
+          let idx = offset + k;
+          [tempArr[idx], tempArr[idx + 1]] = [tempArr[idx + 1], tempArr[idx]];
+          this.possRoutes.push(tempArr.slice(0));
+        }
+      }
+    }
+
+    return this.possRoutes.length;
+  }
+}
+
+console.log(Staircase.getNumOfPossRoutes(5));
+console.log(Staircase.possRoutes);
+
+// 1 -> 1
+// 1
+
+// 2 -> 1, 1
+// 1 + 1
+// 2
+
+// 3 -> 1, 2
+// 1 + 1 + 1
+// 2 + 1
+// 1 + 2
+
+// 4 -> 1, 3, 1
+// 1 + 1 + 1 + 1
+// 2 + 1 + 1
+// 1 + 2 + 1
+// 1 + 1 + 2
+// 2 + 2
+
+// 5 -> 1, 4, 3
+// 1 + 1 + 1 + 1 + 1
+// 2 + 1 + 1 + 1
+// 1 + 2 + 1 + 1
+// 1 + 1 + 2 + 1
+// 1 + 1 + 1 + 2
+// 2 + 2 + 1
+// 2 + 1 + 2
+// 1 + 2 + 2
