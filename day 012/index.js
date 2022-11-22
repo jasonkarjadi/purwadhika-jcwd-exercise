@@ -39,6 +39,51 @@ console.log(getMajority([3, 3, 3, 3, 4, 4, 5]));
 // Output: 1994
 // Explanation: M = 1000, CM = 900, XC = 90 and IV = 4.
 
+class RomanNumeral {
+  //   static #I = 1;
+  //   static #V = 5;
+  //   static #X = 10;
+  //   static #L = 50;
+  //   static #C = 100;
+  //   static #D = 500;
+  //   static #M = 1000;
+  static #numEnts = [
+    ["I", 1],
+    ["V", 5],
+    ["X", 10],
+    ["L", 50],
+    ["C", 100],
+    ["D", 500],
+    ["M", 1000],
+  ];
+
+  static convertToInt(romanNum = "I") {
+    let romanNumArr = romanNum
+      .toUpperCase()
+      .split("")
+      .filter((val) => val !== " ");
+    let intArr = romanNumArr.map(
+      (romanNum) => this.#numEnts.find((ent) => ent[0] === romanNum)[1]
+    );
+    let betterIntArr = intArr.map((int, idx, thisArr) => {
+      let amountNums =
+        int == thisArr[idx + 1]
+          ? int == thisArr[idx + 2]
+            ? [3, 2]
+            : [2, 1]
+          : [1, 0];
+      int *= amountNums[0];
+      thisArr.splice(idx, amountNums[1]);
+      return int;
+    });
+    let resInt = betterIntArr.reduceRight((prevVal, currVal) =>
+      prevVal <= currVal ? prevVal + currVal : prevVal - currVal
+    );
+    return resInt;
+  }
+}
+console.log(RomanNumeral.convertToInt("XLIII"));
+
 // Given an integer numRows, return the first numRows of
 // Pascal's triangle.
 // In Pascal's triangle, each number is the sum of the two
