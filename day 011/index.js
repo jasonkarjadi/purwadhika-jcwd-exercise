@@ -71,11 +71,24 @@ console.log(findSingleElem([1, 1, 3, 3, 5, 4, 4, 2, 2]));
 let s = "halim";
 let t = "hamil";
 
-const checkIsAnagram = (stringA, stringB) => {
-  let isAnagram;
+const prepStr = (inputString = "") =>
+  inputString
+    .toLowerCase()
+    .split("")
+    .filter((str) => str !== " ")
+    .sort();
+
+const checkIsAnagram = (stringA = "", stringB = "") => {
+  // includes all letters == is anagram
+  let isAnagram =
+    stringA.length == stringB.length
+      ? prepStr(stringA)
+          .map((letter, idx) => letter === prepStr(stringB)[idx])
+          .reduce((prevVal, currVal) => prevVal && currVal)
+      : false;
   return isAnagram;
 };
-checkIsAnagram(s, t);
+console.log(checkIsAnagram(s, t));
 
 // You are climbing a staircase. It takes n steps to reach the top. Each time you can either climb 1
 // or 2 steps. In how many distinct ways can you climb to the top?
