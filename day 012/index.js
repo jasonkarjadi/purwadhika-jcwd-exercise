@@ -95,6 +95,27 @@ console.log(RomanNumeral.convertToInt("XLIII"));
 // Input: numRows = 1
 // Output: [[1]]
 
+let numRows = 6;
+
+let pascalTri = [];
+for (let i = 0; i < numRows; i++) {
+  pascalTri.push(
+    !i
+      ? [1]
+      : Array(i + 1)
+          .fill()
+          .map((_, idx, thisArr) => {
+            let prevArr = pascalTri[i - 1];
+            let val =
+              !idx || idx == thisArr.length - 1
+                ? 1
+                : prevArr[idx - 1] + prevArr[idx];
+            return val;
+          })
+  );
+}
+console.log(pascalTri);
+
 // You are given an array prices where prices[i] is the price of a given stock on the ith day.
 // You want to maximize your profit by choosing a single day to buy one stock and choosing a
 // different day in the future to sell that stock.
