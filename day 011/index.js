@@ -106,8 +106,6 @@ console.log(checkIsAnagram(s, t));
 // 2. 1 step + 2 steps
 // 3. 2 steps + 1 step
 
-let n = 3;
-
 // const getNumsOfPossRoutes = (inputNum) => {
 //   let numsOfPossRoutes = 0;
 //   let equation = [];
@@ -124,41 +122,41 @@ let n = 3;
 // };
 // getNumsOfPossRoutes(3);
 
-class Staircase {
-  static possRoutes = [];
+// class Staircase {
+//   static possRoutes = [];
 
-  static getNumOfPossRoutes(inputNum = 0) {
-    let allOneArr = new Array(inputNum).fill(1);
-    this.possRoutes.push(allOneArr.slice(0));
+//   static getNumOfPossRoutes(inputNum = 0) {
+//     let allOneArr = new Array(inputNum).fill(1);
+//     this.possRoutes.push(allOneArr.slice(0));
 
-    // if (stepsArr.length > 1) {
-    //   stepsArr.shift();
-    //   stepsArr[0] = 2;
-    //   this.possRoutes.push(stepsArr);
-    // }
+//     // if (stepsArr.length > 1) {
+//     //   stepsArr.shift();
+//     //   stepsArr[0] = 2;
+//     //   this.possRoutes.push(stepsArr);
+//     // }
 
-    let stepsArr = allOneArr.slice(0);
-    for (let i = 0; stepsArr[i] && stepsArr[i + 1]; i++) {
-      stepsArr.splice(i, 2, 2);
-      this.possRoutes.push(stepsArr.slice(0));
+//     let stepsArr = allOneArr.slice(0);
+//     for (let i = 0; stepsArr[i] && stepsArr[i + 1]; i++) {
+//       stepsArr.splice(i, 2, 2);
+//       this.possRoutes.push(stepsArr.slice(0));
 
-      let tempArr = stepsArr.slice(0);
-      for (let j = 0; j <= i; j++) {
-        let offset = i - j;
-        for (let k = 0; k < tempArr.slice(i + 1).length; k++) {
-          let idx = offset + k;
-          [tempArr[idx], tempArr[idx + 1]] = [tempArr[idx + 1], tempArr[idx]];
-          this.possRoutes.push(tempArr.slice(0));
-        }
-      }
-    }
+//       let tempArr = stepsArr.slice(0);
+//       for (let j = 0; j <= i; j++) {
+//         let offset = i - j;
+//         for (let k = 0; k < tempArr.slice(i + 1).length; k++) {
+//           let idx = offset + k;
+//           [tempArr[idx], tempArr[idx + 1]] = [tempArr[idx + 1], tempArr[idx]];
+//           this.possRoutes.push(tempArr.slice(0));
+//         }
+//       }
+//     }
 
-    return this.possRoutes.length;
-  }
-}
+//     return this.possRoutes.length;
+//   }
+// }
 
-console.log(Staircase.getNumOfPossRoutes(5));
-console.log(Staircase.possRoutes);
+// console.log(Staircase.getNumOfPossRoutes(5));
+// console.log(Staircase.possRoutes);
 
 // 1 -> 1
 // 1
@@ -188,3 +186,14 @@ console.log(Staircase.possRoutes);
 // 2 + 2 + 1
 // 2 + 1 + 2
 // 1 + 2 + 2
+
+const getNumsOfPossRoutes = (inputNum = 0) => {
+  let xNum = 0;
+  let yNum = 1;
+  for (let i = 0; i < Math.abs(inputNum); i++) {
+    [xNum, yNum] = [yNum, xNum + yNum];
+  }
+  return !xNum ? 0 : yNum;
+};
+
+console.log(getNumsOfPossRoutes(6));
