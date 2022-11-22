@@ -129,4 +129,17 @@ console.log(pascalTri);
 // Example 2:
 // Input: prices = [7,6,4,3,1]
 // Output: 0
-// Explanation: In this case, no transactions are done and the max profit = ÷.
+// Explanation: In this case, no transactions are done and the max profit = 0.
+
+let prices = [3, 4, 7, 1, 2, 3, 6];
+
+let maxProfit = prices
+  .slice()
+  .reverse()
+  .flatMap((priceA, idx, thisArr) =>
+    thisArr.slice(idx).map((priceB) => priceA - priceB)
+  )
+  .reduce((prevVal, currVal) => (prevVal > currVal ? prevVal : currVal));
+
+console.log(prices);
+console.log(maxProfit > 0 ? maxProfit : 0);
