@@ -46,17 +46,26 @@ const getMostCommonChars = (string) => {
 // Write a code to sort a string alphabetically (with and without sort function)
 
 const sortStrWSort = (string) => {
-  return string.split("").sort();
+  return string.split("").sort().join("");
 };
 
 const sortStrWoSort = (string) => {
-  return;
+  const splitted = string.split("");
+  let sorted = [];
+  sorted.push(splitted[0]);
+  splitted.slice(1).map((elemA, _, thisArrA) => {
+    const startIdx = sorted.findIndex(
+      (elemB) => elemA.charCodeAt(0) <= elemB.charCodeAt(0)
+    );
+    sorted.splice(startIdx != -1 ? startIdx : thisArrA.length, 0, elemA);
+  });
+  return sorted.join("");
 };
 
 // Write a code to get minimum date from array of dates.
 
 const getMinDate = (dateArray) => {
-  const minDate = 0;
+  const minDate = dateArray.sort()[0];
   return minDate;
 };
 
@@ -69,7 +78,9 @@ const getArrSums = (arrayA, arrayB) => {
 
 // Write a code to find the longest common prefix string amongst an array of strings.
 
-const getLongestCommonPrefix = (stringArray) => {};
+const getLongestCommonPrefix = (stringArray) => {
+  return;
+};
 
 // Write a code that copies the first half of an array. With an odd number of array elements, the
 // middle element should belong to the first half
@@ -114,10 +125,17 @@ const calcAge = (birthYear, birthMonth, birthDate) => {
   return ageInYears;
 };
 
-export {
+module.exports = {
   checkLocalDayIsWeekend,
   getGCD,
   getLCM,
   getMostCommonChars,
   sortStrWSort,
+  sortStrWoSort,
+  getMinDate,
+  getArrSums,
+  getArrFirstHalf,
+  calcDaysOfMonth,
+  getLocalDaysPassedThisYear,
+  calcAge,
 };
